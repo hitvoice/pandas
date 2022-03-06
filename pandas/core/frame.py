@@ -9395,7 +9395,7 @@ NaN 12.3   33.0
                     return res.reindex(self.index, copy=False)
                 else:
                     return concat(
-                        frames, axis=1, join=how, verify_integrity=True, sort=sort
+                        frames, axis=1, join=how, verify_integrity=True, sort=(how == 'outer' or sort)
                     )
 
             joined = frames[0]

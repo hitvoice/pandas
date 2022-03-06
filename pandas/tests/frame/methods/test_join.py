@@ -203,6 +203,24 @@ def test_join_left_sequence_non_unique_index():
     tm.assert_frame_equal(joined, expected)
 
 
+def test_outer_join_multiple_dataframes():
+    # https://github.com/pandas-dev/pandas/issues/46225
+    df1 = DataFrame({"a": [1, 1, 1, 1]}, index=[3, 2, 1, 0])
+    df2 = DataFrame({"b": [2, 2]}, index=[3, 1])
+    df3 = DataFrame({"c": [3, 3]}, index=[0, 2])
+    joined = df1.join([df2, df3], how='outer')
+    expected = DataFrame(
+        {
+            "a": [1, 1, 1, 1],
+            "b": [np.nan, 2, np.nan, 2],
+            "c": [3, np.nan, 3, np.nan],
+        },
+        index=[0, 1, 2, 3],
+    )
+
+    tm.assert_frame_equal(joined, expected)
+
+
 @pytest.mark.parametrize("sort_kw", [True, False])
 def test_suppress_future_warning_with_sort_kw(sort_kw):
     a = DataFrame({"col1": [1, 2]}, index=["c", "a"])
